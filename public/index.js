@@ -11,6 +11,12 @@ $(document).ready(function() {
         secondYearStr = $('[name=second-year]').val(),
         category = $('[name=category]:checked').val();
 
+    // We only have data through May for 2015, so don't let the user select a time beyond then
+    if ((firstYearStr === '2015' || secondYearStr === '2015') && parseInt(monthStr, 10) > 3) {
+      alert('Sorry, there is not yet data in the year 2015 for that month');
+      return false;
+    }
+
     // Get the arguments for the first AJAX call to our API.
     // The result will be something like: "start=2015-01-01&end=2015-02-01"
     var firstYearParams = $.param({
