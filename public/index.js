@@ -43,11 +43,7 @@ $(document).ready(function() {
       var firstYearData = firstYearResults[0],
           secondYearData = secondYearResults[0];
 
-      if (chart) {
-        updateChart(category, firstYearStr, firstYearData, secondYearStr, secondYearData);
-      } else {
-        drawChart(category, firstYearStr, firstYearData, secondYearStr, secondYearData);
-      }
+      drawChart(category, firstYearStr, firstYearData, secondYearStr, secondYearData);
     });
 
     return false; // If we don't return false, the form is actually submitted to the server (not what we want) and the page refreshes
@@ -55,6 +51,12 @@ $(document).ready(function() {
 
   // See http://www.chartjs.org/docs/ for more information about how this function works.
   var drawChart = function(category, firstYearStr, firstYearData, secondYearStr, secondYearData) {
+    // If we are redrawing the chart, we need to destroy the old one, first
+    if (chart) {
+      chart.destroy();
+      chart = null;
+    }
+
     // Get the context of the canvas element we want to select
     var ctx = $('#chart')[0].getContext('2d');
 
@@ -99,19 +101,6 @@ $(document).ready(function() {
 
     // Create the actual chart, and save a reference to it.
     chart = new Chart(ctx).Line(data);
-  };
-
-  var updateChart = function(category, firstYearStr, firstYearData, secondYearStr, secondYearData) {
-    var firstYearValues = _.pluck(firstYearData, category);
-    var secondYearValues = _.pluck(secondYearData, category);
-
-    // Change the value of each point in the chart's dataset to reflect the new data
-    for (var i = 0; i < firstYearValues.length; i++) {
-      chart.datasets[0].points[i].value = firstYearValues[i];
-      chart.datasets[1].points[i].value = secondYearValues[i];
-    }
-
-    chart.update();
   };
 
   // Utility method for getting a starting date string in the format: "YYYY-MM-DD" given the starting year and month.
